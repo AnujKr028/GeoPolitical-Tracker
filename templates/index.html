@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Overview - Geopolitical Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Markdown Renderer -->
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+
+<!-- HTML Sanitizer -->
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-brand">Geopolitical <span>Tracker</span></div>
+        <div class="nav-links">
+            <a href="/" class="active">Global Overview</a>
+            <a href="/country">Country Deep-Dive Analytics</a>
+        </div>
+    </nav>
+
+    <div class="layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div>
+                <h2>Filters</h2>
+                <div class="form-group" style="margin-top: 16px;">
+                    <label>Country</label>
+                    <select id="countryFilter" onchange="loadDashboard()">
+                        <option value="All">All</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-top: 16px;">
+                    <label>Minimum Severity: <span id="sevVal" style="color:#2563eb; font-weight:700;">1</span></label>
+                    <input type="range" id="sevFilter" min="1" max="10" value="1" oninput="document.getElementById('sevVal').innerText=this.value" onchange="loadDashboard()">
+                </div>
+            </div>
+
+            <div>
+                <h2>Add New Event</h2>
+                <form id="eventForm" onsubmit="submitEvent(event)" style="display:flex; flex-direction:column; gap:14px; margin-top: 16px;">
+                    <div class="form-group"><label>Date</label><input type="date" id="evDate" required></div>
+                    <div class="form-group"><label>Country</label><input type="text" id="evCountry" value="India" required></div>
+                    <div class="form-group"><label>Region</label><input type="text" id="evRegion" value="South Asia" required></div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="evType">
+                            <option value="conflict">Conflict</option>
+                            <option value="protest">Protest</option>
+                            <option value="diplomacy">Diplomacy</option>
+                            <option value="sanction">Sanction</option>
+                            <option value="election">Election</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Severity (1-10)</label><input type="number" id="evSev" min="1" max="10" value="5" required></div>
+                    <div class="form-group"><label>Summary</label><input type="text" id="evSummary" placeholder="Event details..." required></div>
+                    <button type="submit">Insert Event</button>
+                    <div id="formMsg"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div class="main">
+            <div class="header">
+                <h1>Global Geopolitical Overview</h1>
+                <p>Real-Time ACLED Intelligence, MongoDB Aggregation Pipelines & K-Means ML Risk Clustering</p>
+            </div>
+
+            <div class="metrics">
+                <div class="card"><span>Total Database Events</span><h3 id="mTotal">-</h3></div>
+                <div class="card"><span>Avg Severity (Filtered)</span><h3 id="mAvg">-</h3></div>
+                <div class="card"><span>Showing Recent</span><h3 id="mShowing">-</h3></div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-box">
+                    <h3>Events by Country (MongoDB $group)</h3>
+                    <p class="sub">Top countries ranked by total recorded events</p>
+                    <div class="chart-container"><canvas id="countryChart"></canvas></div>
+                </div>
+                <div class="chart-box">
+                    <h3>Monthly Escalation Trend</h3>
+                    <p class="sub">Global average severity progression over time</p>
+                    <div class="chart-container"><canvas id="trendChart"></canvas></div>
+                </div>
+            </div>
+
+            <div class="table-box">
+                <h3>Machine Learning Insights: Conflict Risk Hotspots (K-Means Clustering)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Country</th>
+                            <th>Total Severity Score</th>
+                            <th>Total Events</th>
+                            <th>ML Risk Classification</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mlTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="table-box">
+                <h3>Recent Events</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Country</th>
+                            <th>Region</th>
+                            <th>Type</th>
+                            <th>Severity</th>
+                            <th>Summary</th>
+                        </tr>
+                    </thead>
+                    <tbody id="eventsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>loadDashboard();</script>
+</body>
+</html>

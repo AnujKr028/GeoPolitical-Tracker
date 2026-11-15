@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Country Deep-Dive - Geopolitical Tracker</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Markdown Renderer -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+
+    <!-- HTML Sanitizer -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            Geopolitical <span>Tracker</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Global Overview</a>
+            <a href="/country" class="active">Country Deep-Dive Analytics</a>
+        </div>
+    </nav>
+
+
+    <!-- Main Dashboard -->
+    <div class="main">
+
+        <!-- Page Header -->
+        <div class="header-row">
+
+            <div class="header">
+                <h1 id="cTitle">Country Intelligence: India</h1>
+                <p>Analyze which violence/event categories increased or decreased over time</p>
+            </div>
+
+            <div class="country-picker">
+                <label for="deepCountrySelect">Select Country:</label>
+
+                <select id="deepCountrySelect"
+                    onchange="loadCountryAnalytics(this.value)">
+
+                    <option value="India">India</option>
+
+                </select>
+            </div>
+
+        </div>
+
+
+        <!-- Summary Cards -->
+        <div class="metrics">
+
+            <div class="card">
+                <span>Total Country Events</span>
+                <h3 id="cTotalEvents">-</h3>
+                <p id="cDateRange">Date Span: -</p>
+            </div>
+
+            <div class="card">
+                <span>Dominant Event Category</span>
+                <h3 id="cTopType" style="text-transform: capitalize;">-</h3>
+                <p id="cTopTypeCount">-</p>
+            </div>
+
+            <div class="card">
+                <span>Violence Trend Shift</span>
+                <h3 id="cTrendBadge">-</h3>
+                <p id="cTrendDetail">Comparing first vs latest month</p>
+            </div>
+
+        </div>
+
+
+        <!-- Charts Section -->
+        <div class="charts-grid">
+
+            <!-- Timeline Chart -->
+            <div class="chart-box full">
+
+                <h3>Timeline Trend by Violence / Event Type (Monthly Progression)</h3>
+
+                <p class="sub">
+                    Track rise and fall of Armed Conflicts, Protests,
+                    and Strategic Developments from start to end
+                </p>
+
+                <div class="chart-container" style="height: 360px;">
+                    <canvas id="typeTimelineChart"></canvas>
+                </div>
+
+            </div>
+
+
+            <!-- Event Category Breakdown -->
+            <div class="chart-box">
+
+                <h3>Event Category Breakdown</h3>
+
+                <p class="sub">
+                    Share of different conflict types in selected country
+                </p>
+
+                <div class="chart-container">
+                    <canvas id="typePieChart"></canvas>
+                </div>
+
+            </div>
+
+
+            <!-- Regions Table -->
+            <div class="table-box">
+
+                <h3>Top Affected Regions / States</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Region / State</th>
+                            <th>Total Events</th>
+                            <th>Peak Severity</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="regionTableBody"></tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- AI INTELLIGENCE REPORT SECTION -->
+
+    <section class="ai-report">
+
+        <!-- Report Header -->
+        <div class="ai-report-header">
+
+            <div class="ai-report-title">
+
+                <span class="ai-eyebrow">
+                    GEOPOLITICAL INTELLIGENCE
+                </span>
+
+                <h2>AI Intelligence Brief</h2>
+
+                <p>
+                    Data-driven analysis, conflict assessment
+                    and strategic insights
+                </p>
+
+            </div>
+
+            <button
+                class="ai-generate-btn"
+                onclick="fetchAIInsights()">
+
+                Generate AI Analysis
+
+            </button>
+
+        </div>
+
+
+        <!-- Loading Message -->
+        <div id="aiLoading" style="display: none;">
+
+            Analyzing dashboard metrics and generating intelligence report...
+
+        </div>
+
+
+        <!-- AI Generated Report -->
+        <div id="aiContentBox" class="ai-content">
+
+            <div class="ai-placeholder">
+
+                <h3>Intelligence Report Awaiting Generation</h3>
+
+                <p>
+                    Select a country and generate an AI-powered
+                    geopolitical intelligence report based on
+                    the available ACLED event data.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <script>
+        loadCountryAnalytics("India");
+    </script>
+
+</body>
+</html>
