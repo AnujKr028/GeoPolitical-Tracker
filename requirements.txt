@@ -1,0 +1,8 @@
+Flask
+gunicorn
+pymongo[srv]
+pandas
+scikit-learn
+cohere
+python-dotenv
+dnspython
