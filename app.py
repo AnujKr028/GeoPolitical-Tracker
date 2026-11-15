@@ -10,12 +10,24 @@ from dotenv import load_dotenv
 app = Flask(__name__)
 db = get_db()
 
+load_dotenv()
+
+
 # Initialize cohere Client (Aap apni API key yahan daal sakte hain)
 import cohere
 
+
+COHERE_API_KEY = os.getenv("COHERE_API_KEY")
+
+
 # Initialize Cohere Client with API Key
+
+if not COHERE_API_KEY:
+    raise RuntimeError("COHERE_API_KEY is missing!")
+
+
 co = cohere.ClientV2(
-    api_key="cohere_GY5bspRFjb0REeohskz2w3cQSz55CcV3GAUR569l2vptbs"
+    api_key=COHERE_API_KEY
 )
 
 @app.route("/")
@@ -351,6 +363,21 @@ of isolated AI-generated bullet points.
  
     """
 
+    prompt += f"""
+
+TARGET COUNTRY:
+{selected_country}
+
+ACTUAL ACLED EVENTS FROM MONGODB:
+
+{chr(10).join(event_summaries)}
+
+IMPORTANT:
+Base your analysis on the above supplied events.
+If the sample is insufficient, explicitly mention the limitation.
+Do not invent statistics or events.
+"""
+
     try:
         response = co.chat(
             model="command-a-03-2025",
@@ -370,9 +397,11 @@ of isolated AI-generated bullet points.
         })
 
     except Exception as e:
+        app.logger.exception("Cohere AI request failed")
+
         return jsonify({
             "status": "error",
-            "message": str(e)
+            "message": "AI analysis failed. Please try again."
         }), 500
 
 
